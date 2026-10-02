@@ -11,6 +11,7 @@ final class CastController: NSObject, ObservableObject {
     @Published private(set) var playerState: GCKMediaPlayerState = .unknown
     @Published private(set) var nowPlayingTitle: String?
     @Published private(set) var lastError: String?
+    @Published private(set) var discoveredCount: UInt = 0
 
     var isConnected: Bool { deviceName != nil }
 
@@ -19,6 +20,7 @@ final class CastController: NSObject, ObservableObject {
     private override init() {
         super.init()
         sessionManager.add(self)
+        GCKCastContext.sharedInstance().discoveryManager.add(self)
         if let session = sessionManager.currentCastSession {
             attach(session)
         }
@@ -125,6 +127,14 @@ extension GCKMediaPlayerState {
         case .loading: return "Loading"
         case .idle: return "Idle"
         default: return "—"
+        }
+    }
+}
+
+extension CastController: GCKDiscoveryManagerListener {
+    nonisolated func didUpdateDeviceList() {
+        Task { @MainActor in
+            self.discoveredCount = GCKCastContext.sharedInstance().discoveryManager.deviceCount
         }
     }
 }

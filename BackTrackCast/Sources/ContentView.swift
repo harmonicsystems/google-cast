@@ -62,6 +62,7 @@ struct ContentView: View {
                     } else {
                         Text("Tap the Cast button to pick a speaker.")
                             .foregroundStyle(.secondary)
+                        LabeledContent("Speakers found", value: "\(cast.discoveredCount)")
                     }
                     if let error = cast.lastError {
                         Text(error).foregroundStyle(.red).font(.footnote)

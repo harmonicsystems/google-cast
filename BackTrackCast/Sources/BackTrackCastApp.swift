@@ -12,6 +12,10 @@ struct BackTrackCastApp: App {
         options.physicalVolumeButtonsWillControlDeviceVolume = true
         GCKCastContext.setSharedInstanceWith(options)
         #if DEBUG
+        let filter = GCKLoggerFilter()
+        filter.minimumLevel = .verbose
+        GCKLogger.sharedInstance().filter = filter
+        GCKLogger.sharedInstance().loggingEnabled = true
         GCKLogger.sharedInstance().delegate = CastLogDelegate.shared
         #endif
     }
@@ -24,12 +28,17 @@ struct BackTrackCastApp: App {
     }
 }
 
-/// Prints SDK log lines while debugging discovery. Not used in release builds.
+/// Mirrors SDK log lines to Documents/cast.log (and NSLog) while debugging discovery.
 final class CastLogDelegate: NSObject, GCKLoggerDelegate {
     static let shared = CastLogDelegate()
+    private let handle: FileHandle? = {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("cast.log")
+        FileManager.default.createFile(atPath: url.path, contents: Data())
+        return try? FileHandle(forWritingTo: url)
+    }()
     func logMessage(_ message: String, at level: GCKLoggerLevel, fromFunction function: String, location: String) {
-        if ProcessInfo.processInfo.environment["CAST_VERBOSE"] != nil || level.rawValue >= GCKLoggerLevel.warning.rawValue {
-            print("[Cast] \(function) \(message)")
-        }
+        let line = "\(Date()) [\(level.rawValue)] \(function) \(message)\n"
+        handle?.write(line.data(using: .utf8)!)
+        if level.rawValue >= GCKLoggerLevel.warning.rawValue { NSLog("[Cast] %@", line) }
     }
 }
