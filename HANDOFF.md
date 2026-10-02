@@ -121,17 +121,14 @@ Done by Claude, committed locally on `main` (two commits, repo not yet pushed):
 - Deviation from step 4: the SDK's `GCKMediaLoadRequestData` is immutable in 4.8;
   use `GCKMediaLoadRequestDataBuilder` / `GCKMediaQueueDataBuilder`.
 
-Left for David (needs his accounts):
-1. **Create the repo and push** (Claude isn't allowed to create a public repo):
-   ```bash
-   cd ~/Code/google-cast && gh repo create harmonicsystems/google-cast --public --source=. --push
-   ```
-   The remote is already set to `git@github-harmonicsystems:harmonicsystems/google-cast.git`.
-   The audio commit is 375 MB; the push takes a few minutes.
-2. **Enable Pages**: Settings ▸ Pages ▸ Source = Deploy from a branch, `main` / `/docs`.
-   Or: `gh api -X POST repos/harmonicsystems/google-cast/pages -f 'source[branch]=main' -f 'source[path]=/docs'`.
-   Checkpoint: https://harmonicsystems.github.io/google-cast/ plays a track in Safari.
-3. **Sign and run**: open `BackTrackCast.xcworkspace`, Signing & Capabilities ▸ Team.
+Done 2026-10-02 after the first pass: repo pushed to
+https://github.com/harmonicsystems/google-cast, Pages enabled from `main` / `/docs`.
+Checkpoint passed: https://harmonicsystems.github.io/google-cast/audio/wash-c-96.m4a
+serves `audio/mp4` with `accept-ranges: bytes`; https://harmonicsystems.github.io/google-cast/
+lists all 84 tracks.
+
+Left for David:
+1. **Sign and run**: open `BackTrackCast.xcworkspace`, Signing & Capabilities ▸ Team.
    `project.yml` has `DEVELOPMENT_TEAM: PFGM5X4HD6` (the team most of ~/Code uses),
    but the Mac has no signing cert for it yet, so Xcode must log in once. Run on the
    iPhone, accept the local-network prompt, then step 5 above.
