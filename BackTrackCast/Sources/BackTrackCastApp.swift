@@ -28,7 +28,7 @@ struct BackTrackCastApp: App {
 final class CastLogDelegate: NSObject, GCKLoggerDelegate {
     static let shared = CastLogDelegate()
     func logMessage(_ message: String, at level: GCKLoggerLevel, fromFunction function: String, location: String) {
-        if level.rawValue >= GCKLoggerLevel.warning.rawValue {
+        if ProcessInfo.processInfo.environment["CAST_VERBOSE"] != nil || level.rawValue >= GCKLoggerLevel.warning.rawValue {
             print("[Cast] \(function) \(message)")
         }
     }
