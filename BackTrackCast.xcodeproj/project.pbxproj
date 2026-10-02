@@ -8,37 +8,47 @@
 
 /* Begin PBXBuildFile section */
 		05FD29B029216974790BB33F /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AF6484E26926880F710D01 /* Track.swift */; };
+		0E1EB0A6BB4FB53BE5CA247B /* Pods_BackTrackCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BC04A02A7C0B25AB9A54526 /* Pods_BackTrackCast.framework */; };
 		0F41168B860358E73A6A6933 /* CastController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE43F04E3E7B108466A07D /* CastController.swift */; };
 		103506EE99B73E718130DB5D /* BackTrackCastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11BE0A2C3B38A7EFF1D2C76 /* BackTrackCastApp.swift */; };
-		53F2FF42E790ADDE1D8D78A2 /* Pods_BackTrackCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C5C72EA89C9B2B6DD184405 /* Pods_BackTrackCast.framework */; };
 		67857A00B2D82323FBFC7C4A /* CastButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DAC978D7A52E98ACA2DD95 /* CastButton.swift */; };
 		6D0C1CE203BF22A05E87F671 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B37518DE5B62792AA2BEF8 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		08AF6484E26926880F710D01 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
-		0C5E0CF9FFCFF839B28D181B /* Pods-BackTrackCast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackTrackCast.debug.xcconfig"; path = "Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast.debug.xcconfig"; sourceTree = "<group>"; };
+		39B56EFA265DFA402F433533 /* Pods-BackTrackCast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackTrackCast.debug.xcconfig"; path = "Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast.debug.xcconfig"; sourceTree = "<group>"; };
+		54A28BA552E3DBDADB9C7F99 /* Pods-BackTrackCast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackTrackCast.release.xcconfig"; path = "Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast.release.xcconfig"; sourceTree = "<group>"; };
 		5E8E78953B1009FA0258A17E /* BackTrackCast.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BackTrackCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61B37518DE5B62792AA2BEF8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		79A34E000A0CFC7487F5B728 /* Pods-BackTrackCast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackTrackCast.release.xcconfig"; path = "Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast.release.xcconfig"; sourceTree = "<group>"; };
-		8C5C72EA89C9B2B6DD184405 /* Pods_BackTrackCast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackTrackCast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BC04A02A7C0B25AB9A54526 /* Pods_BackTrackCast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackTrackCast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3DAC978D7A52E98ACA2DD95 /* CastButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastButton.swift; sourceTree = "<group>"; };
 		B5BE43F04E3E7B108466A07D /* CastController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastController.swift; sourceTree = "<group>"; };
 		D11BE0A2C3B38A7EFF1D2C76 /* BackTrackCastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackTrackCastApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		2D06D6659BE143BD410E9390 /* Frameworks */ = {
+		B6E0330111C9920319A00F7F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53F2FF42E790ADDE1D8D78A2 /* Pods_BackTrackCast.framework in Frameworks */,
+				0E1EB0A6BB4FB53BE5CA247B /* Pods_BackTrackCast.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		093B4F3ECF39116D4C3C45EA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				39B56EFA265DFA402F433533 /* Pods-BackTrackCast.debug.xcconfig */,
+				54A28BA552E3DBDADB9C7F99 /* Pods-BackTrackCast.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		1081654B8CCAE7888231181B /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -51,6 +61,14 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		34A76CC8F63812AAD63BC09B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9BC04A02A7C0B25AB9A54526 /* Pods_BackTrackCast.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		43AAA6B0134054287CB85EB9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -59,31 +77,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4D65DA5CF5A350440AA74776 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8C5C72EA89C9B2B6DD184405 /* Pods_BackTrackCast.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		722471ED2B8F3A589A89A962 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				0C5E0CF9FFCFF839B28D181B /* Pods-BackTrackCast.debug.xcconfig */,
-				79A34E000A0CFC7487F5B728 /* Pods-BackTrackCast.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		B9B0D2680F529843A5DE8CF2 = {
 			isa = PBXGroup;
 			children = (
 				E2869AB792460FFE16F341E0 /* BackTrackCast */,
 				43AAA6B0134054287CB85EB9 /* Products */,
-				722471ED2B8F3A589A89A962 /* Pods */,
-				4D65DA5CF5A350440AA74776 /* Frameworks */,
+				093B4F3ECF39116D4C3C45EA /* Pods */,
+				34A76CC8F63812AAD63BC09B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -102,11 +102,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A966DEBCDF3B8D490CE30EBF /* Build configuration list for PBXNativeTarget "BackTrackCast" */;
 			buildPhases = (
-				433B11ABD8BF8F7ADC39F54E /* [CP] Check Pods Manifest.lock */,
+				8F066487D5FD16C58999CFED /* [CP] Check Pods Manifest.lock */,
 				0068C9A6F6404654FDF1A6BC /* Sources */,
-				2D06D6659BE143BD410E9390 /* Frameworks */,
-				FE4EDD48D76F84A87B68685B /* [CP] Embed Pods Frameworks */,
-				C6F71DECC727EE3F7447063F /* [CP] Copy Pods Resources */,
+				B6E0330111C9920319A00F7F /* Frameworks */,
+				BBFE2CB438D6501FA40D56DB /* [CP] Embed Pods Frameworks */,
+				8575665B4719227728BB0F1C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -152,7 +152,24 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		433B11ABD8BF8F7ADC39F54E /* [CP] Check Pods Manifest.lock */ = {
+		8575665B4719227728BB0F1C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8F066487D5FD16C58999CFED /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -174,24 +191,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C6F71DECC727EE3F7447063F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BackTrackCast/Pods-BackTrackCast-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FE4EDD48D76F84A87B68685B /* [CP] Embed Pods Frameworks */ = {
+		BBFE2CB438D6501FA40D56DB /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -286,7 +286,7 @@
 		};
 		5CA02928E3057EF78C59C821 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0C5E0CF9FFCFF839B28D181B /* Pods-BackTrackCast.debug.xcconfig */;
+			baseConfigurationReference = 39B56EFA265DFA402F433533 /* Pods-BackTrackCast.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -297,6 +297,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.harmonic-systems.backtrackcast";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -369,7 +373,7 @@
 		};
 		FA109D37B65F7B8FD4C291FE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79A34E000A0CFC7487F5B728 /* Pods-BackTrackCast.release.xcconfig */;
+			baseConfigurationReference = 54A28BA552E3DBDADB9C7F99 /* Pods-BackTrackCast.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -380,6 +384,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.harmonic-systems.backtrackcast";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
