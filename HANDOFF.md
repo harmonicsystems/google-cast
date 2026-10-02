@@ -1,0 +1,104 @@
+# BackTrack → Nest: Shape A handoff
+
+Goal: a small native iOS **Cast sender** that plays a BackTrack audio file on David's Nest speakers through Google's **Default Media Receiver**. No receiver app, no server of our own. This is the MVP for learning the Cast system; the content comes from BackTrack's existing **Setup ▸ Save ▸ Save as audio** (`~/Code/backtrack`, `js/export.js`), which renders any setup to a WAV.
+
+How Cast works, in one line: the phone never streams audio. The sender tells the speaker *what URL to play*; the speaker fetches and plays it itself. So the file must sit at an HTTPS URL the Nest can reach.
+
+## Non-goals (for now)
+- No custom Web Receiver (Shape B: BackTrack's engine running on the speaker). Different handoff.
+- No in-app rendering of the WAV on the iPhone, no local HTTP server. The file is pre-made and hosted.
+- No queueing, no artwork beyond a title, no multi-room grouping. Playing one file end to end is the win.
+
+## Prerequisites (David)
+- Xcode (current), an iPhone on iOS 16+, and a Nest speaker on the **same Wi-Fi** as the iPhone.
+- An Apple Developer account is NOT needed to run on his own iPhone (free personal team signing is enough).
+- CocoaPods installed (`brew install cocoapods`). The Cast SDK ships as the pod `google-cast-sdk` (4.8.x); there is no Swift Package Manager distribution, only CocoaPods or a manually dropped-in XCFramework.
+- One hosted WAV (step 1).
+
+## Step 1 — make and host the test file
+1. In BackTrack **on the Mac** (`python3 -m http.server 8766` in `~/Code/backtrack`, or the live site), pick a setup and use Setup ▸ Save ▸ Save as audio, length **1 min** (the browser render is fast: ~0.3 s for 70 s). Good first candidates:
+   - **Noise mode, Soft rain**: `renderNoise` makes whole buffer periods, so the file loops seamlessly when a player repeats it. Nice on a speaker.
+   - **A Groove at 96 with the Wash**: proves drums + drone come through.
+2. Host it as a static file. Simplest: a `docs/` folder in this repo with GitHub Pages on `main`/`docs`, giving `https://harmonicsystems.github.io/google-cast/<name>.wav`. (Or drop it in BackTrack's repo under `audio/cast/` — but keep it out of BackTrack's service worker `SHELL`.)
+3. Check the URL in a desktop browser plays it. Note the size: 48 kHz stereo 16-bit is ~11 MB/min and 1.536 Mbps — under the audio devices' 2 Mbps cap but not by much. If the Nest stutters, re-render at 44.1 kHz or convert to AAC (`ffmpeg -i in.wav -c:a aac -b:a 192k out.m4a`) and serve that instead; Cast plays both.
+
+Checkpoint: a public HTTPS URL that plays in Safari.
+
+## Step 2 — the Xcode project
+- New iOS App, SwiftUI, name `BackTrackCast`, bundle id `org.harmonic-systems.backtrackcast` (any id; personal team signing).
+- Minimum deployment iOS 16.
+- `pod init`, Podfile: `pod 'google-cast-sdk'`, `pod install`, open the `.xcworkspace` from now on.
+- Do NOT set the optimization flag to `-Ofast` (the SDK crashes); leave the default `-Os`.
+
+`Info.plist` additions (the local-network prompt won't appear and discovery will silently find nothing without these):
+```
+NSBonjourServices
+  _googlecast._tcp
+  _CC1AD845._googlecast._tcp
+NSLocalNetworkUsageDescription
+  BackTrack Cast finds speakers on your Wi-Fi to play your backing tracks.
+```
+`CC1AD845` is the Default Media Receiver's app id (`kGCKDefaultMediaReceiverApplicationID` in the SDK).
+
+## Step 3 — initialize Cast once, at launch
+In the `App` struct's `init` (or an `AppDelegate` adaptor):
+```swift
+import GoogleCast
+
+let criteria = GCKDiscoveryCriteria(applicationID: kGCKDefaultMediaReceiverApplicationID)
+let options = GCKCastOptions(discoveryCriteria: criteria)
+options.physicalVolumeButtonsWillControlDeviceVolume = true
+GCKCastContext.setSharedInstanceWith(options)
+GCKLogger.sharedInstance().delegate = nil   // set a delegate while debugging discovery
+```
+
+## Step 4 — the screen
+One SwiftUI view:
+- A **Cast button** (`GCKUICastButton`, wrapped in `UIViewRepresentable`). Tapping it shows the SDK's own device picker; picking the Nest starts a session. That picker is the whole connection UI — don't build one.
+- A list of one or more hardcoded entries `{ title, url, contentType }`, e.g. `("Soft rain · 1 min", ".../soft-rain-1min.wav", "audio/wav")`.
+- A **Play on speaker** button, enabled when `GCKCastContext.sharedInstance().sessionManager.currentCastSession != nil`.
+
+Play:
+```swift
+let meta = GCKMediaMetadata(metadataType: .musicTrack)
+meta.setString("Soft rain · 1 min", forKey: kGCKMetadataKeyTitle)
+meta.setString("BackTrack", forKey: kGCKMetadataKeyArtist)
+
+let b = GCKMediaInformationBuilder(contentURL: url)
+b.streamType = .buffered
+b.contentType = "audio/wav"
+b.metadata = meta
+
+let req = GCKMediaLoadRequestData()
+req.mediaInformation = b.build()
+req.autoplay = true
+GCKCastContext.sharedInstance().sessionManager.currentCastSession?
+    .remoteMediaClient?.loadMedia(with: req)
+```
+Also add the SDK's mini controller / expanded controller later if wanted (`GCKUIMiniMediaControlsViewController`); not needed for the MVP.
+
+Observe session state with `GCKSessionManagerListener` (`sessionManager(_:didStart:)`, `didEnd`) to flip the button, and `GCKRemoteMediaClientListener` (`remoteMediaClient(_:didUpdate mediaStatus:)`) to show playing / idle. Keep the UI copy descriptive, as in BackTrack: the speaker's name and what's playing, nothing more.
+
+## Step 5 — verify on the real speaker
+1. Run on the iPhone (not the Simulator: no Bonjour discovery there in practice). Accept the local-network prompt.
+2. Cast button → the Nest appears by its Home name → pick it → Play. The file plays on the Nest; the iPhone stays silent.
+3. Noise loop: in the Google Home app, confirm the track ends cleanly after a minute (Default Media Receiver doesn't loop; repeating is a later feature via `GCKMediaQueue` with `repeatMode`).
+4. Lock the iPhone: playback continues (it's the speaker's).
+5. Note what the Nest's volume buttons / the iPhone's volume rocker do.
+
+Record results in this file under **Verified**.
+
+## Known unknowns
+- Whether the Nest handles a 48 kHz WAV without underruns at 1.5 Mbps (fallback: 44.1 kHz or AAC, step 1.3).
+- Whether the free personal signing team is enough for the local-network entitlement on a current iOS (it should be; if discovery finds nothing, check `NSBonjourServices` first, then Settings ▸ Privacy ▸ Local Network).
+- The SDK's pod version at the time of install; the docs page is the source: https://developers.google.com/cast/docs/ios_sender
+
+## Later (not now)
+- A queue with repeat for the seamless Noise loops.
+- Picking a BackTrack preset in the sender and resolving it to a file name: the files could be named by `presetString()` (e.g. `n-pink_e-6.-2.1.3.0.wav`), so a BackTrack `?p=` link maps straight to a URL.
+- Shape B: BackTrack as a custom audio-only Web Receiver. First experiment there is whether the Web Audio API exists in the audio-device receiver runtime at all.
+
+## Sources
+- iOS sender setup: https://developers.google.com/cast/docs/ios_sender
+- Audio-only devices (2 Mbps cap, 2 MB buffers): https://developers.google.com/cast/docs/audio
+- Supported media: https://developers.google.com/cast/docs/media

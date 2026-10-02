@@ -1,0 +1,33 @@
+name: BackTrackCast
+options:
+  bundleIdPrefix: org.harmonic-systems
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    DEVELOPMENT_TEAM: PFGM5X4HD6
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Automatic
+targets:
+  BackTrackCast:
+    type: application
+    platform: iOS
+    sources:
+      - BackTrackCast/Sources
+    info:
+      path: BackTrackCast/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: BackTrack Cast
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSLocalNetworkUsageDescription: BackTrack Cast finds speakers on your Wi-Fi to play your backing tracks.
+        NSBonjourServices:
+          - _googlecast._tcp
+          - _CC1AD845._googlecast._tcp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.harmonic-systems.backtrackcast
+        TARGETED_DEVICE_FAMILY: "1"
+        # The Cast SDK crashes under -Ofast; leave the default -Os.
+        SWIFT_OPTIMIZATION_LEVEL: "-Onone"

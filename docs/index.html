@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackTrack Cast · hosted audio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font: 16px/1.5 -apple-system, system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; color: #3a3530; background: #f6f1e8; }
+  h1 { font-weight: 500; font-size: 1.4rem; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { text-align: left; padding: .3rem .5rem; border-bottom: 1px solid #e3dccf; font-variant-numeric: tabular-nums; }
+  a { color: #6b4e2e; }
+  audio { width: 100%; margin-top: 1rem; }
+  code { background: #ece5d8; padding: .1rem .3rem; border-radius: 3px; }
+</style>
+<h1>BackTrack Cast · hosted audio</h1>
+<p>Static files for the Cast sender. Each is a 3‑minute Logic bounce of the <em>Wash with Drums</em> setup, AAC 192 kbps (<code>audio/mp4</code>). The list below is built from <a href="manifest.json">manifest.json</a>.</p>
+<audio id="player" controls preload="none"></audio>
+<table id="t"><thead><tr><th>Tempo</th><th>Keys</th></tr></thead><tbody></tbody></table>
+<script>
+fetch('manifest.json').then(r => r.json()).then(m => {
+  const tb = document.querySelector('#t tbody');
+  const player = document.querySelector('#player');
+  for (const tempo of m.tempos) {
+    const tr = document.createElement('tr');
+    const links = m.keys.map(k => {
+      const t = m.tracks.find(x => x.tempo === tempo && x.key === k);
+      return t ? `<a href="${t.url}" data-url="${t.url}">${k}</a>` : k;
+    }).join(' · ');
+    tr.innerHTML = `<td>${tempo} BPM</td><td>${links}</td>`;
+    tb.appendChild(tr);
+  }
+  tb.addEventListener('click', e => {
+    const a = e.target.closest('a[data-url]'); if (!a) return;
+    e.preventDefault(); player.src = a.dataset.url; player.play();
+  });
+});
+</script>
