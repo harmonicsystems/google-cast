@@ -133,6 +133,33 @@ Left for David:
    but the Mac has no signing cert for it yet, so Xcode must log in once. Run on the
    iPhone, accept the local-network prompt, then step 5 above.
 
-## Verified
-_(fill in after the first real-speaker run: stutter at 192k AAC? repeat seamless?
-volume rocker behaviour?)_
+## Verified (2026-10-02)
+- First end-to-end success: BackTrack Cast on David's iPhone 13 Pro (iOS 26.6.1) → Nest Mini
+  "Feed and Seed", playing a hosted AAC render from GitHub Pages. The iPhone stays silent.
+- Still to note after more use: any stutter at 192 kbps AAC, whether the one-item queue
+  repeat is seamless, what the iPhone volume rocker does.
+
+### Discovery troubleshooting (the thing that cost the morning)
+Symptom: Cast dialog says "No devices available"; app's "Speakers found" stays 0.
+It was the network, not the app. Diagnosis trail, so it's quick next time:
+- Mac on the same subnet saw the speakers fine (`dns-sd -B _googlecast._tcp local.`).
+- The SDK log (now written to the app's `Documents/cast.log`; pull with
+  `xcrun devicectl device copy from --domain-type appDataContainer --domain-identifier
+  org.harmonic-systems.backtrackcast --source Documents/cast.log --destination cast.log`)
+  showed the phone on the right subnet sending its mDNS query and getting zero replies.
+- Google Home on the phone was flaky too; Spotify "working" proves nothing because it
+  uses Spotify Connect via the cloud, not local discovery.
+- Router is Spectrum Advanced WiFi (SAX2V1S) with two WiFi pods; no web UI, no
+  multicast/isolation settings in the My Spectrum app. Fix was reboots: restart the
+  router from the app, power-cycle the Nest Mini, forget + rejoin Wi-Fi on the phone.
+- If it recurs: stand next to the Nest Mini (same pod) to confirm the mesh is at fault.
+
+Other gotchas hit on the way:
+- Xcode "No such module GoogleCast" = the `.xcodeproj` was open instead of the
+  `.xcworkspace`, or the run destination was the Mac (SDK has no Mac slice; project now
+  restricts destinations to iPhone).
+- "Developer disk image could not be mounted" = phone was locked. Unlock it, rerun.
+- Personal team signing needed the updated Program License Agreement accepted at
+  developer.apple.com first.
+- `GCKLogger` only calls its delegate once `loggingEnabled = true` and a
+  `GCKLoggerFilter` with `minimumLevel = .verbose` is set (DEBUG builds do this).
