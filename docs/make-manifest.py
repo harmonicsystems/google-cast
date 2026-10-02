@@ -5,6 +5,7 @@ File naming (key lowercase, e.g. bb):
   wash-<key>-<tempo>.m4a   full mix (drone + drums)
   drums-<tempo>.m4a        drums only (key-independent)
   drone-<key>.m4a          drone only (tempo-independent)
+  drone-hi-<key>.m4a       drone an octave up (Logic "Wash Up" bounces)
 Run from the repo root after adding or re-rendering files.
 """
 import json, os, re, subprocess
@@ -45,23 +46,36 @@ for name in sorted(os.listdir(os.path.join(HERE, "audio"))):
         key = m.group(1).capitalize()
         tracks.append(dict(base, layer="drone", code=f"drone-{m.group(1)}",
                            title=f"Drone in {key}", key=key, tempo=None))
+        continue
+    m = re.match(r"drone-hi-([a-g]b?)\.m4a$", name)
+    if m:
+        key = m.group(1).capitalize()
+        tracks.append(dict(base, layer="droneHi", code=f"drone-hi-{m.group(1)}",
+                           title=f"Drone up in {key}", key=key, tempo=None))
 
-LAYER_ORDER = ["wash", "drums", "drone"]
+LAYER_ORDER = ["wash", "drums", "drone", "droneHi"]
 tracks.sort(key=lambda t: (LAYER_ORDER.index(t["layer"]), t["tempo"] or 0, KEY_ORDER.index(t["key"]) if t["key"] else -1))
 manifest = {
     "artist": "BackTrack",
     "setup": "Wash with Drums",
     "art": ART,
     "layers": {
-        "wash":  {"title": "Wash with Drums", "needs": ["key", "tempo"]},
-        "drums": {"title": "Drums",           "needs": ["tempo"]},
-        "drone": {"title": "Drone",           "needs": ["key"]},
+        "wash":    {"title": "Wash with Drums", "needs": ["key", "tempo"]},
+        "drums":   {"title": "Drums",           "needs": ["tempo"]},
+        "drone":   {"title": "Drone",           "needs": ["key"]},
+        "droneHi": {"title": "Drone up",        "needs": ["key"]},
     },
     "tempos": sorted({t["tempo"] for t in tracks if t["tempo"]}),
     "drumTempos": sorted({t["tempo"] for t in tracks if t["layer"] == "drums"}),
     "keys": [k for k in KEY_ORDER if any(t["key"] == k for t in tracks)],
     "tracks": tracks,
 }
+for lid, layer in manifest["layers"].items():
+    mine = [t for t in tracks if t["layer"] == lid]
+    layer["keys"] = [k for k in KEY_ORDER if any(t["key"] == k for t in mine)]
+    layer["tempos"] = sorted({t["tempo"] for t in mine if t["tempo"]})
+    layer["codes"] = [t["code"] for t in mine]
+
 with open(os.path.join(HERE, "manifest.json"), "w") as f:
     json.dump(manifest, f, indent=1)
 print(f"{len(tracks)} tracks, {sum(t['bytes'] for t in tracks)/1e6:.0f} MB")
