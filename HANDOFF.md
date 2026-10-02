@@ -163,3 +163,14 @@ Other gotchas hit on the way:
   developer.apple.com first.
 - `GCKLogger` only calls its delegate once `loggingEnabled = true` and a
   `GCKLoggerFilter` with `minimumLevel = .verbose` is set (DEBUG builds do this).
+
+## Rendering BackTrack noise for the speakers (2026-10-02)
+BackTrack's noise lives in `~/Code/backtrack/js/noise.js` (`renderNoise(g, minutes, sr)`,
+browser-only: OfflineAudioContext). To make hosted files that match the app exactly:
+`python3 -m http.server 8766` in `~/Code/backtrack`, open it in a browser, and from the
+console `import('/js/noise.js')` + `import('/js/rec.js')`: `renderNoise({...NDEFAULTS, ncolor,
+neq, nwave, nswell}, 2, 48000)` → `mixWav(buf, name, from)` → PUT the File to a local
+receiver that writes it to disk → ffmpeg to AAC → `docs/audio/noise-<id>.m4a` → add the
+title to `NOISE_TITLES` in `docs/make-manifest.py`. Textures (`TEXTURES` in state.js) are
+[id, label, color, eq, waves, depth]; colors white/pink/brown/grey/blue/violet; waves 6–16 s.
+Whole buffer periods, so the files loop seamlessly under REPEAT_ALL.
