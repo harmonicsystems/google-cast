@@ -12,22 +12,21 @@
   code { background: #ece5d8; padding: .1rem .3rem; border-radius: 3px; }
 </style>
 <h1>BackTrack Cast · hosted audio</h1>
-<p>Static files for the Cast sender. Each is a 3‑minute Logic bounce of the <em>Wash with Drums</em> setup, AAC 192 kbps (<code>audio/mp4</code>). The list below is built from <a href="manifest.json">manifest.json</a>.</p>
+<p>Static files for the Cast senders, AAC 192 kbps (<code>audio/mp4</code>), built from <a href="manifest.json">manifest.json</a>. Three layers: the full <em>Wash with Drums</em> mix by key and tempo, drum loops by tempo, and drones by key. Drums and drones are stems for playing different things on different speakers.</p>
 <audio id="player" controls preload="none"></audio>
-<table id="t"><thead><tr><th>Tempo</th><th>Keys</th></tr></thead><tbody></tbody></table>
+<table id="t"><thead><tr><th>Layer</th><th>Files</th></tr></thead><tbody></tbody></table>
 <script>
 fetch('manifest.json').then(r => r.json()).then(m => {
   const tb = document.querySelector('#t tbody');
   const player = document.querySelector('#player');
+  const link = t => `<a href="${t.url}" data-url="${t.url}">${t.key || t.tempo + ' BPM'}</a>`;
+  const row = (label, cells) => { const tr = document.createElement('tr'); tr.innerHTML = `<td>${label}</td><td>${cells}</td>`; tb.appendChild(tr); };
   for (const tempo of m.tempos) {
-    const tr = document.createElement('tr');
-    const links = m.keys.map(k => {
-      const t = m.tracks.find(x => x.tempo === tempo && x.key === k);
-      return t ? `<a href="${t.url}" data-url="${t.url}">${k}</a>` : k;
-    }).join(' · ');
-    tr.innerHTML = `<td>${tempo} BPM</td><td>${links}</td>`;
-    tb.appendChild(tr);
+    const links = m.keys.map(k => { const t = m.tracks.find(x => x.layer === 'wash' && x.tempo === tempo && x.key === k); return t ? link(t) : k; }).join(' · ');
+    row(`Wash · ${tempo} BPM`, links);
   }
+  row('Drums', m.tracks.filter(t => t.layer === 'drums').map(link).join(' · '));
+  row('Drone', m.tracks.filter(t => t.layer === 'drone').map(link).join(' · '));
   tb.addEventListener('click', e => {
     const a = e.target.closest('a[data-url]'); if (!a) return;
     e.preventDefault(); player.src = a.dataset.url; player.play();
