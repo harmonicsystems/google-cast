@@ -6,6 +6,7 @@ File naming (key lowercase, e.g. bb):
   drums-<tempo>.m4a        drums only (key-independent)
   drone-<key>.m4a          drone only (tempo-independent)
   drone-hi-<key>.m4a       drone an octave up (Logic "Wash Up" bounces)
+  noise-<id>.m4a           BackTrack Noise mode renders (seamless loops); titles in NOISE_TITLES
 Run from the repo root after adding or re-rendering files.
 """
 import json, os, re, subprocess
@@ -15,6 +16,11 @@ BASE = "https://harmonicsystems.github.io/google-cast/audio/"
 KEY_ORDER = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 ART = "https://harmonicsystems.github.io/google-cast/art/wash.jpg"
+NOISE_TITLES = {
+    "deep": "Deep", "fan": "Fan", "rain": "Soft rain", "falls": "Waterfall", "surf": "Surf",
+    "pink": "Pink noise", "brown": "Brown noise", "grey": "Grey noise",
+    "rain-waves": "Soft rain, waves", "deep-waves": "Deep, waves",
+}
 
 def duration(path):
     try:
@@ -52,9 +58,17 @@ for name in sorted(os.listdir(os.path.join(HERE, "audio"))):
         key = m.group(1).capitalize()
         tracks.append(dict(base, layer="droneHi", code=f"drone-hi-{m.group(1)}",
                            title=f"Drone up in {key}", key=key, tempo=None))
+        continue
+    m = re.match(r"noise-([a-z-]+)\.m4a$", name)
+    if m:
+        nid = m.group(1)
+        tracks.append(dict(base, layer="noise", code=f"noise-{nid}",
+                           title=NOISE_TITLES.get(nid, nid.replace("-", " ").capitalize()), key=None, tempo=None))
 
-LAYER_ORDER = ["wash", "drums", "drone", "droneHi"]
-tracks.sort(key=lambda t: (LAYER_ORDER.index(t["layer"]), t["tempo"] or 0, KEY_ORDER.index(t["key"]) if t["key"] else -1))
+LAYER_ORDER = ["wash", "drums", "drone", "droneHi", "noise"]
+NOISE_ORDER = list(NOISE_TITLES)
+tracks.sort(key=lambda t: (LAYER_ORDER.index(t["layer"]), t["tempo"] or 0, KEY_ORDER.index(t["key"]) if t["key"] else -1,
+                           NOISE_ORDER.index(t["code"][6:]) if t["layer"] == "noise" and t["code"][6:] in NOISE_ORDER else 99))
 manifest = {
     "artist": "BackTrack",
     "setup": "Wash with Drums",
@@ -64,6 +78,7 @@ manifest = {
         "drums":   {"title": "Drums",           "needs": ["tempo"]},
         "drone":   {"title": "Drone",           "needs": ["key"]},
         "droneHi": {"title": "Drone up",        "needs": ["key"]},
+        "noise":   {"title": "Noise",           "needs": []},
     },
     "tempos": sorted({t["tempo"] for t in tracks if t["tempo"]}),
     "drumTempos": sorted({t["tempo"] for t in tracks if t["layer"] == "drums"}),

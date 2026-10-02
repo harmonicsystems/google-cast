@@ -193,6 +193,24 @@
     "drone-hi-bb",
     "drone-hi-b"
    ]
+  },
+  "noise": {
+   "title": "Noise",
+   "needs": [],
+   "keys": [],
+   "tempos": [],
+   "codes": [
+    "noise-deep",
+    "noise-fan",
+    "noise-rain",
+    "noise-falls",
+    "noise-surf",
+    "noise-pink",
+    "noise-brown",
+    "noise-grey",
+    "noise-rain-waves",
+    "noise-deep-waves"
+   ]
   }
  },
  "tempos": [
@@ -1484,6 +1502,126 @@
    "code": "drone-hi-b",
    "title": "Drone up in B",
    "key": "B",
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-deep.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912430,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-deep",
+   "title": "Deep",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-fan.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912301,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-fan",
+   "title": "Fan",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-rain.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912179,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-rain",
+   "title": "Soft rain",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-falls.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912330,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-falls",
+   "title": "Waterfall",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-surf.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2914036,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-surf",
+   "title": "Surf",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-pink.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912663,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-pink",
+   "title": "Pink noise",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-brown.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912358,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-brown",
+   "title": "Brown noise",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-grey.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912507,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-grey",
+   "title": "Grey noise",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-rain-waves.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2912274,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-rain-waves",
+   "title": "Soft rain, waves",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/noise-deep-waves.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 2911997,
+   "durationSec": 120,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "noise",
+   "code": "noise-deep-waves",
+   "title": "Deep, waves",
+   "key": null,
    "tempo": null
   }
  ]
