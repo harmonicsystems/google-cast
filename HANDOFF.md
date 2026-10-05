@@ -174,3 +174,19 @@ receiver that writes it to disk → ffmpeg to AAC → `docs/audio/noise-<id>.m4a
 title to `NOISE_TITLES` in `docs/make-manifest.py`. Textures (`TEXTURES` in state.js) are
 [id, label, color, eq, waves, depth]; colors white/pink/brown/grey/blue/violet; waves 6–16 s.
 Whole buffer periods, so the files loop seamlessly under REPEAT_ALL.
+
+## Long-form renders: Nap Time (2026-10-05)
+`docs/audio/long-nap-time.m4a` is BackTrack's `?p=n-brown/e0.4.6.-6.-11/w6/s60/arain.w16.s50`
+stretched to 150 minutes (brown surf arriving at soft rain, 16 s waves), ending in a 30 s fade.
+- A single OfflineAudioContext can't hold 2.5 h (≈3.5 GB), so it was rendered as thirty 300 s
+  segments in the BackTrack page: same `noiseBuffer`, `BANDS`/`eqLive`, `scheduleWaves`,
+  with everything expressed in global time (buffer offset = A mod buffer length; EQ and the
+  equal-power color crossfade evaluated at global position; waves scheduled on the original
+  clock through a proxy that shifts times by the segment start) and 0.5 s of true pre-roll.
+  Chunked vs single-piece differs by < 7e-5 at a 0.35 peak.
+- Segments written at half gain, concatenated with ffmpeg (`volume=2,afade=t=out:st=8970:d=30`).
+- GitHub's file cap is 100 MB, so this one is HE-AAC 80 kbps (`afconvert -f m4af -d aach
+  -b 80000`), 85 MB. Everything else stays AAC-LC 192k. The Pages site is now ~610 MB of
+  its ~1 GB allowance: a second 2.5 h file fits, a third doesn't. Past that, long files
+  should move to GitHub Release assets (2 GB each) or another host.
+- Manifest layer `long` marks tracks `once: true`; senders must not loop them.
