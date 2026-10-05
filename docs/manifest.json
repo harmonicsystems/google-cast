@@ -211,6 +211,15 @@
     "noise-rain-waves",
     "noise-deep-waves"
    ]
+  },
+  "long": {
+   "title": "Long form",
+   "needs": [],
+   "keys": [],
+   "tempos": [],
+   "codes": [
+    "long-nap-time"
+   ]
   }
  },
  "tempos": [
@@ -1621,6 +1630,19 @@
    "layer": "noise",
    "code": "noise-deep-waves",
    "title": "Deep, waves",
+   "key": null,
+   "tempo": null
+  },
+  {
+   "url": "https://harmonicsystems.github.io/google-cast/audio/long-nap-time.m4a",
+   "contentType": "audio/mp4",
+   "bytes": 89588341,
+   "durationSec": 9000,
+   "image": "https://harmonicsystems.github.io/google-cast/art/wash.jpg",
+   "layer": "long",
+   "code": "long-nap-time",
+   "once": true,
+   "title": "Nap Time",
    "key": null,
    "tempo": null
   }

@@ -7,6 +7,7 @@ File naming (key lowercase, e.g. bb):
   drone-<key>.m4a          drone only (tempo-independent)
   drone-hi-<key>.m4a       drone an octave up (Logic "Wash Up" bounces)
   noise-<id>.m4a           BackTrack Noise mode renders (seamless loops); titles in NOISE_TITLES
+  long-<id>.m4a            long-form one-shots (play once, no repeat); titles in LONG_TITLES
 Run from the repo root after adding or re-rendering files.
 """
 import json, os, re, subprocess
@@ -16,6 +17,10 @@ BASE = "https://harmonicsystems.github.io/google-cast/audio/"
 KEY_ORDER = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 ART = "https://harmonicsystems.github.io/google-cast/art/wash.jpg"
+LONG_TITLES = {
+    # BackTrack ?p=n-brown/e0.4.6.-6.-11/w6/s60/t150/arain.w16.s50 : brown surf arriving at soft rain, 2.5 h, 30 s fade
+    "nap-time": "Nap Time",
+}
 NOISE_TITLES = {
     "deep": "Deep", "fan": "Fan", "rain": "Soft rain", "falls": "Waterfall", "surf": "Surf",
     "pink": "Pink noise", "brown": "Brown noise", "grey": "Grey noise",
@@ -59,13 +64,19 @@ for name in sorted(os.listdir(os.path.join(HERE, "audio"))):
         tracks.append(dict(base, layer="droneHi", code=f"drone-hi-{m.group(1)}",
                            title=f"Drone up in {key}", key=key, tempo=None))
         continue
+    m = re.match(r"long-([a-z0-9-]+)\.m4a$", name)
+    if m:
+        lid = m.group(1)
+        tracks.append(dict(base, layer="long", code=f"long-{lid}", once=True,
+                           title=LONG_TITLES.get(lid, lid.replace("-", " ").title()), key=None, tempo=None))
+        continue
     m = re.match(r"noise-([a-z-]+)\.m4a$", name)
     if m:
         nid = m.group(1)
         tracks.append(dict(base, layer="noise", code=f"noise-{nid}",
                            title=NOISE_TITLES.get(nid, nid.replace("-", " ").capitalize()), key=None, tempo=None))
 
-LAYER_ORDER = ["wash", "drums", "drone", "droneHi", "noise"]
+LAYER_ORDER = ["wash", "drums", "drone", "droneHi", "noise", "long"]
 NOISE_ORDER = list(NOISE_TITLES)
 tracks.sort(key=lambda t: (LAYER_ORDER.index(t["layer"]), t["tempo"] or 0, KEY_ORDER.index(t["key"]) if t["key"] else -1,
                            NOISE_ORDER.index(t["code"][6:]) if t["layer"] == "noise" and t["code"][6:] in NOISE_ORDER else 99))
@@ -79,6 +90,7 @@ manifest = {
         "drone":   {"title": "Drone",           "needs": ["key"]},
         "droneHi": {"title": "Drone up",        "needs": ["key"]},
         "noise":   {"title": "Noise",           "needs": []},
+        "long":    {"title": "Long form",       "needs": []},
     },
     "tempos": sorted({t["tempo"] for t in tracks if t["tempo"]}),
     "drumTempos": sorted({t["tempo"] for t in tracks if t["layer"] == "drums"}),
