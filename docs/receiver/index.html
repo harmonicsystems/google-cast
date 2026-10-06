@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>BackTrack</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#f6f1e8; --card:#fffdf8; --ink:#3a3530; --mute:#8a8278; --line:#e3dccf; --accent:#6b4e2e; }
+  html, body { height:100%; margin:0; background:var(--bg); color:var(--ink); font:16px/1.4 -apple-system, "Helvetica Neue", system-ui, sans-serif; overflow:hidden; }
+  body { display:flex; align-items:center; justify-content:center; }
+  #idle { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; color:var(--mute); }
+  #idle .mark { width:6rem; height:6rem; border-radius:50%; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--accent); }
+  #np { position:absolute; inset:0; display:none; align-items:center; justify-content:center; gap:4vw; padding:6vh 6vw; box-sizing:border-box; }
+  #np.on { display:flex; }
+  #art { width:40vh; height:40vh; max-width:38vw; border-radius:16px; object-fit:cover; box-shadow:0 20px 60px rgba(58,53,48,.18); background:var(--card); }
+  #text { display:flex; flex-direction:column; gap:1vh; min-width:0; }
+  #title { font-size:6vh; font-weight:500; line-height:1.1; letter-spacing:-.01em; }
+  #sub { font-size:3vh; color:var(--mute); }
+  #time { display:flex; align-items:center; gap:1.5vh; font-size:2.4vh; color:var(--mute); font-variant-numeric: tabular-nums; margin-top:2vh; }
+  #bar { flex:1; height:.8vh; background:var(--line); border-radius:999px; overflow:hidden; max-width:40vw; }
+  #bar i { display:block; height:100%; width:0; background:var(--accent); opacity:.6; }
+  #pulse { position:absolute; left:50%; top:50%; width:120vh; height:120vh; margin:-60vh 0 0 -60vh; border-radius:50%; background:radial-gradient(circle, rgba(107,78,46,.10) 0%, rgba(107,78,46,0) 60%); transform:scale(.9); opacity:0; pointer-events:none; }
+  #pulse.beat { animation: beat var(--beat, 1s) ease-out infinite; }
+  @keyframes beat { 0% { transform:scale(.9); opacity:.9 } 100% { transform:scale(1.15); opacity:0 } }
+  #state { position:absolute; right:3vw; bottom:3vh; font-size:2vh; color:var(--mute); }
+</style>
+<div id="pulse"></div>
+<div id="idle"><div class="mark">♩</div><div>BackTrack</div><div style="font-size:.9rem">waiting for a sender</div></div>
+<div id="np">
+  <img id="art" alt="">
+  <div id="text">
+    <div id="title"></div>
+    <div id="sub"></div>
+    <div id="time"><span id="el">0:00</span><div id="bar"><i></i></div><span id="du">–</span></div>
+  </div>
+</div>
+<div id="state"></div>
+<script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+<script>
+  // Custom receiver, milestone 1: the Hub shows our own now-playing screen while
+  // playback stays on the framework's built-in player. Audio-only devices run
+  // this too; nothing is drawn there. The pulse beats at the track's tempo when
+  // the title carries "… at N BPM" (or customData.tempo); otherwise it breathes slowly.
+  var context = cast.framework.CastReceiverContext.getInstance();
+  var pm = context.getPlayerManager();
+  var $ = function (id) { return document.getElementById(id); };
+  var pos = { t: 0, at: Date.now(), d: 0, playing: false };
+
+  function fmt(sec) {
+    sec = Math.max(0, Math.floor(sec || 0)); var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+    return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function tempoOf(media) {
+    var cd = media && media.customData; if (cd && cd.tempo) return +cd.tempo;
+    var m = /at (\d+) BPM/.exec((media && media.metadata && media.metadata.title) || ''); return m ? +m[1] : 0;
+  }
+  function show(media) {
+    var md = (media && media.metadata) || {};
+    $('title').textContent = md.title || 'BackTrack';
+    $('sub').textContent = [md.artist, md.albumName].filter(Boolean).join(' · ');
+    var img = md.images && md.images[0] && md.images[0].url;
+    $('art').src = img || ''; $('art').style.visibility = img ? 'visible' : 'hidden';
+    var bpm = tempoOf(media);
+    document.documentElement.style.setProperty('--beat', bpm ? (60 / bpm) + 's' : '6s');
+    $('pulse').classList.add('beat');
+    $('idle').style.display = 'none'; $('np').classList.add('on');
+  }
+  function hide() { $('np').classList.remove('on'); $('idle').style.display = ''; $('pulse').classList.remove('beat'); $('state').textContent = ''; }
+
+  pm.addEventListener(cast.framework.events.EventType.MEDIA_STATUS, function (e) {
+    var st = e.mediaStatus; if (!st) return;
+    if (st.media) show(st.media);
+    pos = { t: st.currentTime || 0, at: Date.now(), d: (st.media && st.media.duration) || pos.d, playing: st.playerState === 'PLAYING' };
+    $('state').textContent = { PLAYING: '', BUFFERING: 'buffering', PAUSED: 'paused', IDLE: '' }[st.playerState] || '';
+    if (st.playerState === 'IDLE' && st.idleReason) hide();
+  });
+  setInterval(function () {
+    var t = pos.t + (pos.playing ? (Date.now() - pos.at) / 1000 : 0);
+    if (pos.d) t = Math.min(t, pos.d);
+    $('el').textContent = fmt(t); $('du').textContent = pos.d ? fmt(pos.d) : '–';
+    $('bar').firstElementChild.style.width = pos.d ? (100 * t / pos.d) + '%' : '0';
+  }, 500);
+
+  var options = new cast.framework.CastReceiverOptions();
+  options.disableIdleTimeout = true;   // a 2.5 h nap track must not be cut off by the idle timer
+  context.start(options);
+</script>
+</html>
